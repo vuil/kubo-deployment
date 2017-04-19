@@ -10,7 +10,7 @@ print_usage() {
   echo ""
   echo "PATH - Path to create the environment folder"
   echo "NAME - Name of the environment"
-  echo "IAAS - One of the currently supported IaaS platforms. Currently, gcp or openstack."
+  echo "IAAS - One of the currently supported IaaS platforms. Currently, gcp, openstack or vsphere."
 }
 
 ensure_config_file() {
@@ -56,7 +56,7 @@ bosh_path=$1
 bosh_name=$2
 iaas=$3
 
-if [ "$iaas" != 'gcp' ] && [ "$iaas" != 'openstack' ]; then
+if [ "$iaas" != 'gcp' ] && [ "$iaas" != 'openstack' ] && [ "$iaas" != 'vsphere' ; then
   print_usage
   exit 1
 fi
