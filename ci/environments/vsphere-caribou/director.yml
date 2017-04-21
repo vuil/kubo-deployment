@@ -1,0 +1,40 @@
+vcenter_ip: 10.74.32.100
+vcenter_user: root
+vcenter_dc: canada-dc
+vcenter_cluster: canada
+vcenter_ds: vnx5600-toronto-1
+vcenter_rp: thunderbay
+vcenter_vms: thunderbay_vms
+vcenter_templates: thunderbay_templates
+vcenter_disks: thunderbay_disks
+
+network_name: thunderbay
+internal_cidr: 10.74.42.0/25
+internal_gw: 10.74.42.1
+internal_ip: 10.74.42.100
+reserved_ips: [10.74.42.0-10.74.42.100]
+
+dns_recursor_ip: 8.8.8.8
+director_name: thunder-bosh
+deployments_network: kubo-network
+
+cf-tcp-router-name: 10.74.34.55
+routing-cf-api-url: https://api.calgary.cf-app.com
+routing-cf-client-id: tcp_emitter
+routing-cf-uaa-url: https://uaa.calgary.cf-app.com
+routing-cf-app-domain-name: apps.calgary.cf-app.com
+routing-cf-nats-internal-ip: 10.74.34.17
+external-kubo-port: 30000
+
+# we use BOSH 261 since CredHub 0.4 supports only it
+# CredHub 0.4 fixes important bug that breaks deployment
+bosh_release_url: https://bosh.io/d/github.com/cloudfoundry/bosh?v=261.1
+bosh_release_sha1: f46ad38ad49925e96ec93bd69d0e77f67ba07af9
+
+stemcell_version: 3363.19
+stemcell_url: https://bosh.io/d/stemcells/bosh-vsphere-esxi-ubuntu-trusty-go_agent?v=3363.19
+
+credhub_release_url: https://s3.amazonaws.com/kubo-public/credhub-0.4.0.tgz
+credhub_encryption_key: 0BCDEF0123456789ABCDEF0123456789
+
+kubo_release_url: https://s3.amazonaws.com/kubo-public/kubo-release-latest.tgz
