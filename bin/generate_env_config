@@ -56,7 +56,7 @@ bosh_path=$1
 bosh_name=$2
 iaas=$3
 
-if [ "$iaas" != 'gcp' ] && [ "$iaas" != 'openstack' ] && [ "$iaas" != 'vsphere' ; then
+if [ "$iaas" != 'gcp' ] && [ "$iaas" != 'openstack' ] && [ "$iaas" != 'vsphere' ]; then
   print_usage
   exit 1
 fi
