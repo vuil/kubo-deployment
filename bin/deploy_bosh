@@ -31,13 +31,13 @@ main() {
     exit 1
   fi
 
+  iaas=$(bosh-cli int ${bosh_env}/director.yml --path /iaas)
   extra_filename="$2"
+
   if [ -z "${extra_filename}" ] && [ "$iaas" != "vsphere" ]; then
     print_usage
     exit 1
   fi
-
-  iaas=$(bosh-cli int ${bosh_env}/director.yml --path /iaas)
 
   if [ "$iaas" != 'gcp' ] && [ "$iaas" != 'openstack' ] && [ "$iaas" != 'vsphere' ]; then
     echo "Supported platforms are: 'gcp', 'openstack' and 'vsphere'"
@@ -100,16 +100,19 @@ deploy_openstack() {
 }
 
 deploy_vsphere() {
-    bosh-cli create-env "${current_directory}/bosh-deployment/bosh.yml"  \
-      --ops-file "${current_directory}/bosh-deployment/vsphere/cpi.yml" \
-      --ops-file "${current_directory}/bosh-deployment/uaa.yml" \
-      --ops-file "${current_directory}/bosh-deployment/powerdns.yml" \
-      --ops-file "${current_directory}/configurations/generic/credhub.yml" \
-      --ops-file "${current_directory}/configurations/generic/bosh-admin-client.yml" \
-      --state "${BOSH_ENV}/state.json" \
-      --vars-store "${BOSH_ENV}/creds.yml" \
-      --vars-file "${BOSH_ENV}/director-secrets.yml"  \
-      --vars-file "${BOSH_ENV}/director.yml"
+  local bosh_env
+  bosh_env="$1"
+
+  bosh-cli create-env "$(repo_directory)/bosh-deployment/bosh.yml"  \
+    --ops-file "$(repo_directory)/bosh-deployment/vsphere/cpi.yml" \
+    --ops-file "$(repo_directory)/bosh-deployment/uaa.yml" \
+    --ops-file "$(repo_directory)/bosh-deployment/powerdns.yml" \
+    --ops-file "$(repo_directory)/configurations/generic/credhub.yml" \
+    --ops-file "$(repo_directory)/configurations/generic/bosh-admin-client.yml" \
+    --state "${bosh_env}/state.json" \
+    --vars-store "${bosh_env}/creds.yml" \
+    --vars-file "${bosh_env}/director.yml"  \
+    --vars-file "${bosh_env}/director-secrets.yml"
 }
 
 [[ "$0" == "${BASH_SOURCE[0]}" ]] && main "$@"
