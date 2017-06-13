@@ -21,13 +21,14 @@ main() {
     exit 1
   fi
 
-  local bosh_env=$(cd "$1"; pwd)
-  local bosh_iaas="$(bosh-cli int ${bosh_env}/director.yml --path '/iaas')"
-  local cloud_config
+  local bosh_env cloud_config bosh_iaas
+
+  bosh_env=$(cd "$1"; pwd)
+  bosh_iaas="$(bosh-cli int "${bosh_env}/director.yml" --path '/iaas')"
   if [ "$(bosh-cli int "${bosh_env}/director.yml" --path='/routing_mode')" == "cf" ]; then
-    cloud_config=$(bosh-cli int "$(repo_directory)/configurations/${bosh_iaas}/cloud-config.yml" --vars-file ${bosh_env}/director.yml)
+    cloud_config=$(bosh-cli int "$(repo_directory)/configurations/${bosh_iaas}/cloud-config.yml" --vars-file "${bosh_env}/director.yml")
   else
-    cloud_config=$(bosh-cli int "$(repo_directory)/configurations/${bosh_iaas}/cloud-config.yml" --vars-file ${bosh_env}/director.yml --ops-file="$(repo_directory)/manifests/ops-files/load_balancer_target_pools.yml")
+    cloud_config=$(bosh-cli int "$(repo_directory)/configurations/${bosh_iaas}/cloud-config.yml" --vars-file "${bosh_env}/director.yml" --ops-file="$(repo_directory)/manifests/ops-files/load_balancer_target_pools.yml")
   fi
   echo -n "${cloud_config}"
 }

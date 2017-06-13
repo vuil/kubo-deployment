@@ -10,7 +10,8 @@ echo "====================================="
 echo
 
 print_usage() {
-  local release_path=$(cd $(basename "$0"/../..) > /dev/null; pwd)
+  local release_path
+  release_path=$(cd "$(basename "$0"/../..)" > /dev/null; pwd)
   echo "Usage: $(basename "$0") [BOSH_ENV] [DEPLOYMENT_NAME] [RELEASE_SOURCE]"
   echo ""
   echo "BOSH_ENV is the path to your BOSH environment configuration folder"
@@ -30,7 +31,7 @@ print_usage() {
 }
 
 repo_directory() {
-  echo -n $(cd "$(dirname ${BASH_SOURCE[0]})/.."; pwd)
+  echo -n "$(cd "$(dirname "${BASH_SOURCE[0]}")/.."; pwd)"
 }
 
 main() {
@@ -39,11 +40,12 @@ main() {
     exit  1
   fi
 
-  local bosh_env="$(cd "${1}"; pwd -P)"
+  local bosh_env
+  bosh_env="$(cd "${1}"; pwd -P)"
   local deployment_name="${2}"
   local release_source="${3}"
 
-  if [ -z "$(bosh-cli int ${bosh_env}/director.yml --path /iaas)" ]; then
+  if [ -z "$(bosh-cli int "${bosh_env}/director.yml" --path /iaas)" ]; then
    echo "${bosh_env} is not a valid BOSH environment."
    echo "Please use 'generate_env_config' to create one."
    print_usage
@@ -56,11 +58,10 @@ main() {
     *) print_usage; exit 1;;
   esac
 
-  . "$(repo_directory)/bin/lib/deploy_utils"
+  # shellcheck disable=SC1090
+  source "$(repo_directory)/bin/lib/deploy_utils"
 
-  local bosh_director_name
   export_bosh_environment "${bosh_env}"
-  bosh_director_name="$(get_setting "director.yml" /director_name)"
 
   upload_stemcell "${release_source}"
   upload_releases "${release_source}"
@@ -99,8 +100,9 @@ upload_stemcell() {
   local release_source=$1
 
   if [ "${release_source}" != "skip" ]; then
-    local stemcell_url="$(get_setting director.yml /stemcell_url)"
-    BOSH_CLIENT=bosh_admin BOSH_CLIENT_SECRET="$(get_bosh_secret)" bosh-cli -e "${BOSH_NAME}" upload-stemcell ${stemcell_url}
+    local stemcell_url
+    stemcell_url="$(get_setting director.yml /stemcell_url)"
+    BOSH_CLIENT=bosh_admin BOSH_CLIENT_SECRET="$(get_bosh_secret)" bosh-cli -e "${BOSH_NAME}" upload-stemcell "${stemcell_url}"
   fi
 }
 

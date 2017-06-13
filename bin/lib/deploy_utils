@@ -1,9 +1,10 @@
-#@IgnoreInspection BashAddShebang
-# vim: set ft=sh
+#!/bin/bash
+# vim: set ft=bash
 
 export_bosh_environment() {
-  export BOSH_ENV=$1
-  export BOSH_NAME=$(basename ${BOSH_ENV})
+  BOSH_ENV=$1
+  BOSH_NAME=$(basename "${BOSH_ENV}")
+  export BOSH_ENV BOSH_NAME
 }
 
 get_bosh_secret() {
@@ -14,11 +15,11 @@ get_setting() {
   local file_name=$1
   local value_path=$2
 
-  bosh-cli int ${BOSH_ENV}/${file_name} --path "${value_path}" | xargs echo -n
+  bosh-cli int "${BOSH_ENV}/${file_name}" --path "${value_path}" | xargs echo -n
 }
 
 set_cloud_config() {
-  $(cd $(dirname ${BASH_SOURCE[0]}); pwd)/../generate_cloud_config ${BOSH_ENV} | BOSH_CLIENT=bosh_admin BOSH_CLIENT_SECRET=$(get_bosh_secret)  bosh-cli -n -e "${BOSH_NAME}" update-cloud-config -
+  "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../generate_cloud_config" "${BOSH_ENV}" | BOSH_CLIENT=bosh_admin BOSH_CLIENT_SECRET=$(get_bosh_secret)  bosh-cli -n -e "${BOSH_NAME}" update-cloud-config -
 }
 
 deploy_to_bosh() {
@@ -30,7 +31,7 @@ deploy_to_bosh() {
     exit 1
   fi
 
-  echo "${bosh_manifest}" | BOSH_CLIENT=bosh_admin BOSH_CLIENT_SECRET=$(get_bosh_secret) bosh-cli -e "$BOSH_NAME" -d ${deployment_name} -n deploy --no-redact -
+  echo "${bosh_manifest}" | BOSH_CLIENT=bosh_admin BOSH_CLIENT_SECRET=$(get_bosh_secret) bosh-cli -e "$BOSH_NAME" -d "${deployment_name}" -n deploy --no-redact -
 }
 
 create_and_upload_release() {
@@ -64,7 +65,7 @@ generate_manifest() {
   local deployment_name=$2
   local manifest_path=$3
 
-  manifest_dir=$(cd "$(dirname "${manifest_path}")"; pwd)
+  manifest_dir=$(cd "$(dirname "${manifest_path}")" && pwd)
   manifest="$(cat "${manifest_path}")"
 
   if [ -e "${bosh_environment}/${deployment_name}.yml" ]; then
