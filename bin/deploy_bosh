@@ -55,9 +55,9 @@ main() {
 }
 
 deploy_bosh() {
-  local bosh_manifest bosh_env
-  bosh_env=$1
-  bosh_manifest=$2
+  local bosh_env bosh_manifest
+  bosh_env="$1"
+  bosh_manifest="$2"
 
   bosh_manifest_file="$(mktemp)"
   echo "${bosh_manifest}" > "${bosh_manifest_file}"
@@ -67,7 +67,7 @@ deploy_bosh() {
 }
 
 generate_manifest_gcp() {
-  local bosh_env service_account_filename bosh_manifest
+  local bosh_env service_account_filename
   bosh_env="$1"
   service_account_filename="$2"
   bosh-cli int "$(repo_directory)/bosh-deployment/bosh.yml"  \
